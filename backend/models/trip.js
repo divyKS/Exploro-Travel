@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Booking = require("./Booking");
 
 const tripSchema = new mongoose.Schema({
     name: {
@@ -42,6 +43,12 @@ const tripSchema = new mongoose.Schema({
         type: String,
         required: true
     }
+});
+
+tripSchema.post('findOneAndDelete', async function (doc) {
+  if (doc) {
+    await Booking.deleteMany({ trip: doc._id });
+  }
 });
   
 module.exports = mongoose.model('Trip', tripSchema);
