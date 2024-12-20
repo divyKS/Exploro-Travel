@@ -7,6 +7,7 @@ const OrganizerDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showForm, setShowForm] = useState(false);
+  const [editingTrip, setEditingTrip] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -41,24 +42,69 @@ const OrganizerDashboard = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      description: '',
+      location: '',
+      startDate: '',
+      endDate: '',
+      price: '',
+      totalSlots: ''
+    });
+    setEditingTrip(null);
+    setShowForm(false);
+  };
+
+  const handleEditClick = (trip) => {
+    // Format dates to YYYY-MM-DD for input type="date"
+    const formatDate = (dateString) => {
+      const date = new Date(dateString);
+      return date.toISOString().split('T')[0];
+    };
+
+    setFormData({
+      name: trip.name,
+      description: trip.description,
+      location: trip.location,
+      startDate: formatDate(trip.startDate),
+      endDate: formatDate(trip.endDate),
+      price: trip.price,
+      totalSlots: trip.totalSlots
+    });
+    setEditingTrip(trip._id);
+    setShowForm(true);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:3500/api/trips', formData);
-      setShowForm(false);
-      setFormData({
-        name: '',
-        description: '',
-        location: '',
-        startDate: '',
-        endDate: '',
-        price: '',
-        totalSlots: ''
-      });
+      if (editingTrip) {
+        await axios.patch(`http://localhost:3500/api/trips/${editingTrip}`, formData);
+      } else {
+        await axios.post('http://localhost:3500/api/trips', formData);
+      }
+      resetForm();
       fetchTrips();
     } catch (error) {
-      setError('Error creating trip');
+      setError(editingTrip ? 'Error updating trip' : 'Error creating trip');
     }
+    // try {
+    //   await axios.post('http://localhost:3500/api/trips', formData);
+    //   setShowForm(false);
+    //   setFormData({
+    //     name: '',
+    //     description: '',
+    //     location: '',
+    //     startDate: '',
+    //     endDate: '',
+    //     price: '',
+    //     totalSlots: ''
+    //   });
+    //   fetchTrips();
+    // } catch (error) {
+    //   setError('Error creating trip');
+    // }
   };
 
   const handleDeleteTrip = async (tripId) => {
@@ -171,12 +217,12 @@ const OrganizerDashboard = () => {
             type="submit"
             className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
           >
-            Create Trip
+            {editingTrip ? 'Edit Trip' : 'Create Trip'}
           </button>
         </form>
       )}
 
-      <div className="space-y-4">
+    <div className="space-y-4">
         {trips.map((trip) => (
           <div key={trip._id} className="bg-white rounded-lg shadow-md p-6">
             <div className="flex justify-between items-start">
@@ -188,12 +234,21 @@ const OrganizerDashboard = () => {
                 </p>
                 <p className="text-gray-700">Price: ${trip.price}</p>
               </div>
-              <button
-                onClick={() => handleDeleteTrip(trip._id)}
-                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-              >
-                Delete Trip
-              </button>
+
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleEditClick(trip)}
+                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDeleteTrip(trip._id)}
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
         ))}
