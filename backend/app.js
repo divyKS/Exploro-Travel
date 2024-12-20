@@ -6,6 +6,7 @@ const connectDB = require("./db");
 const authRoutes = require('./routes/auth');
 const tripRoutes = require('./routes/trip');
 const bookingRoutes = require('./routes/booking');
+const cartRoutes = require('./routes/cart');
 
 const app = express();
 
@@ -20,6 +21,7 @@ connectDB();
 app.use('/api/auth', authRoutes);
 app.use('/api/trips', tripRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/cart', cartRoutes);
 
 const PORT = process.env.PORT || 3500;
 app.listen(PORT, () => {
