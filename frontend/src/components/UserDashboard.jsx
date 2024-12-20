@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import CancellationModal from './CancellationModal';
 
 const UserDashboard = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [cancelLoading, setCancelLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  
   const { user } = useAuth();
 
   useEffect(() => {
@@ -13,6 +18,7 @@ const UserDashboard = () => {
   }, []);
 
   const fetchBookings = async () => {
+    setLoading(true);
     try {
       const response = await axios.get('http://localhost:3500/api/bookings/my-bookings');
       setBookings(response.data);
@@ -24,12 +30,25 @@ const UserDashboard = () => {
   };
 
   const handleCancelBooking = async (bookingId) => {
+    setCancelLoading(true);
     try {
+      // simulate delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
       await axios.post(`http://localhost:3500/api/bookings/${bookingId}/cancel`);
+      setIsModalOpen(false);
+      setSelectedBooking(null);
       fetchBookings();
     } catch (error) {
       setError('Error cancelling booking');
+    } finally {
+      setCancelLoading(false);
     }
+  };
+
+  const openCancellationModal = (booking) => {
+    setSelectedBooking(booking);
+    setIsModalOpen(true);
   };
 
   if (loading) return <div>Loading...</div>;
@@ -64,8 +83,15 @@ const UserDashboard = () => {
                 </div>
                 
                 {booking.status === 'confirmed' && (
+                  // <button
+                  //   onClick={() => handleCancelBooking(booking._id)}
+                  //   className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                  // >
+                  //   Cancel Booking
+                  // </button>
+                  
                   <button
-                    onClick={() => handleCancelBooking(booking._id)}
+                    onClick={() => openCancellationModal(booking)}
                     className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
                   >
                     Cancel Booking
@@ -76,6 +102,16 @@ const UserDashboard = () => {
           ))
         )}
       </div>
+      <CancellationModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedBooking(null);
+        }}
+        booking={selectedBooking}
+        onConfirmCancel={handleCancelBooking}
+        cancelLoading={cancelLoading}
+      />
     </div>
   );
 };

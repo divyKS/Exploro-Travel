@@ -1,7 +1,7 @@
 const { default: mongoose } = require("mongoose");
 const Booking = require("../models/Booking");
 const Trip = require("../models/Trip");
-const { default: Cart } = require("../../frontend/src/components/Cart");
+const Cart = require("../models/Cart");
 
 const createBooking = async (req, res) => {
     try {
