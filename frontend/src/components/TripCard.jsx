@@ -5,7 +5,7 @@ const TripCard = ({ trip }) => {
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <img
-        src={trip.images[0] || '/placeholder-image.jpg'}
+        src={trip.images?.small?.url || '/placeholder-image.jpg'}
         alt={trip.name}
         className="w-full h-48 object-cover"
       />

@@ -36,9 +36,28 @@ const tripSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    images: [{
-        type: String
-    }],
+    images: {
+        small: {
+          url: {
+            type: String,
+            required: true
+          },
+          public_id: {
+            type: String,
+            required: true
+          }
+        },
+        large: {
+          url: {
+            type: String,
+            required: true
+          },
+          public_id: {
+            type: String,
+            required: true
+          }
+        }
+    },
     location: {
         type: String,
         required: true

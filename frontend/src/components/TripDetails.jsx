@@ -44,19 +44,19 @@ const TripDetails = () => {
     }
   };
 
-  const handleBooking = async () => {
-    if (!user) {
-      navigate('/login');
-      return;
-    }
+  // const handleBooking = async () => {
+  //   if (!user) {
+  //     navigate('/login');
+  //     return;
+  //   }
 
-    try {
-      await axios.post('http://localhost:3500/api/bookings', { tripId: id });
-      navigate('/dashboard');
-    } catch (error) {
-      setError(error.response?.data?.error || 'Error booking trip');
-    }
-  };
+  //   try {
+  //     await axios.post('http://localhost:3500/api/bookings', { tripId: id });
+  //     navigate('/dashboard');
+  //   } catch (error) {
+  //     setError(error.response?.data?.error || 'Error booking trip');
+  //   }
+  // };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div className="text-red-600">{error}</div>;
@@ -67,7 +67,7 @@ const TripDetails = () => {
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="relative h-96">
           <img
-            src={'/placeholder-image.jpg' || trip.images[0]}
+            src={trip.images?.large?.url || '/placeholder-image.jpg'}
             alt={trip.name}
             className="w-full h-full object-cover"
           />
@@ -91,14 +91,19 @@ const TripDetails = () => {
               <div className="text-2xl font-bold mb-4">${trip.price}</div>
               <button
                 onClick={handleAddToCart}
-                disabled={trip.availableSlots === 0 || addingToCart}
+                disabled={trip.availableSlots === 0 || addingToCart || user?.role === 'organizer'}
                 className={`w-full py-3 px-4 rounded-lg text-white text-center ${
-                  trip.availableSlots > 0 && !addingToCart
+                  trip.availableSlots > 0 && !addingToCart && user?.role !== 'organizer'
                     ? 'bg-blue-500 hover:bg-blue-600'
                     : 'bg-gray-400 cursor-not-allowed'
                 }`}
               >
-                {addingToCart ? 'Adding to Cart...' : 'Add to Cart'}
+                {addingToCart 
+                  ? 'Adding to Cart...' 
+                  : user?.role === 'organizer'
+                    ? 'Organizers Cannot Book'
+                    : 'Add to Cart'
+                }
               </button>
               {/* <button
                 onClick={handleBooking}

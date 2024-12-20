@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 const OrganizerDashboard = () => {
   const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [createTripLoading, setCreateTripLoading] = useState(false);
   const [error, setError] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editingTrip, setEditingTrip] = useState(null);
@@ -83,6 +84,7 @@ const OrganizerDashboard = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setCreateTripLoading(true);
     try {
       const data = new FormData();
       
@@ -107,6 +109,8 @@ const OrganizerDashboard = () => {
       fetchTrips();
     } catch (error) {
       setError(editingTrip ? 'Error updating trip' : 'Error creating trip');
+    } finally {
+      setCreateTripLoading(false);
     }
   };
 
@@ -220,7 +224,6 @@ const OrganizerDashboard = () => {
               accept="image/*"
               className="w-full p-2 border rounded"
               onChange={handleImageChange}
-              required
             />
         </div>
           <div className="mt-4">
@@ -236,9 +239,9 @@ const OrganizerDashboard = () => {
           </div>
           <button
             type="submit"
-            className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className={`mt-4 text-white px-4 py-2 rounded ${createTripLoading ? `bg-gray-500` : `bg-blue-500 hover:bg-blue-600`}`}
           >
-            {editingTrip ? 'Edit Trip' : 'Create Trip'}
+            {editingTrip ? 'Edit Trip' : createTripLoading ? 'Creating...' : 'Create Trip'}
           </button>
         </form>
       )}
