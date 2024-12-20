@@ -1,10 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
-  console.log(user)
+  const location = useLocation()
 
   return (
     <nav className="bg-blue-600 text-white shadow-lg">
@@ -21,9 +21,12 @@ const Navbar = () => {
             )}
             {user ? (
               <>
-                <Link to={user.role === 'organizer' ? '/organizer/dashboard' : '/dashboard'}>
-                  Dashboard
-                </Link>
+                {
+                  location.pathname.includes('dashboard')
+                  ? <Link to='/'>Home</Link>
+                    : <Link to={user.role === 'organizer' ? '/organizer/dashboard' : '/dashboard'}>Dashboard</Link>
+                }
+                
                 <button
                   onClick={logout}
                   className="bg-blue-500 hover:bg-blue-700 px-4 py-2 rounded"

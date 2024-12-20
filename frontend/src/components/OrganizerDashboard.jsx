@@ -108,11 +108,13 @@ const OrganizerDashboard = () => {
   };
 
   const handleDeleteTrip = async (tripId) => {
-    try {
-      await axios.delete(`http://localhost:3500/api/trips/${tripId}`);
-      fetchTrips();
-    } catch (error) {
-      setError('Error deleting trip');
+    if (window.confirm("Are you sure you want to delete this trip?")) {
+      try {
+        await axios.delete(`http://localhost:3500/api/trips/${tripId}`);
+        fetchTrips();
+      } catch (error) {
+        setError('Error deleting trip');
+      }
     }
   };
 
