@@ -13,6 +13,11 @@ const Navbar = () => {
             Travel Booking
           </Link>
           <div className="flex items-center space-x-4">
+            {user && (
+              <Link to="/cart" className="hover:text-blue-200">
+                Cart
+              </Link>
+            )}
             {user ? (
               <>
                 <Link to={user.role === 'organizer' ? '/organizer/dashboard' : '/dashboard'}>

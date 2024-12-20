@@ -7,6 +7,7 @@ const TripDetails = () => {
   const [trip, setTrip] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [addingToCart, setAddingToCart] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -25,6 +26,23 @@ const TripDetails = () => {
 
     fetchTrip();
   }, [id]);
+
+  const handleAddToCart = async () => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      setAddingToCart(true);
+      await axios.post('http://localhost:3500/api/cart/add', { tripId: id });
+      navigate('/cart'); // Navigate to cart page
+    } catch (error) {
+      setError(error.response?.data?.error || 'Error adding to cart');
+    } finally {
+      setAddingToCart(false);
+    }
+  };
 
   const handleBooking = async () => {
     if (!user) {
@@ -72,6 +90,17 @@ const TripDetails = () => {
             <div className="bg-gray-50 p-6 rounded-lg">
               <div className="text-2xl font-bold mb-4">${trip.price}</div>
               <button
+                onClick={handleAddToCart}
+                disabled={trip.availableSlots === 0 || addingToCart}
+                className={`w-full py-3 px-4 rounded-lg text-white text-center ${
+                  trip.availableSlots > 0 && !addingToCart
+                    ? 'bg-blue-500 hover:bg-blue-600'
+                    : 'bg-gray-400 cursor-not-allowed'
+                }`}
+              >
+                {addingToCart ? 'Adding to Cart...' : 'Add to Cart'}
+              </button>
+              {/* <button
                 onClick={handleBooking}
                 disabled={trip.availableSlots === 0}
                 className={`w-full py-3 px-4 rounded-lg text-white text-center ${
@@ -81,7 +110,7 @@ const TripDetails = () => {
                 }`}
               >
                 {trip.availableSlots > 0 ? 'Book Now' : 'Sold Out'}
-              </button>
+              </button> */}
               
               <div className="mt-4 text-sm text-gray-600">
                 <h3 className="font-semibold mb-2">Cancellation Policy</h3>

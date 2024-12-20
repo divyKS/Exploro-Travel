@@ -9,6 +9,8 @@ import TripDetails from './components/TripDetails';
 import UserDashboard from './components/UserDashboard';
 import OrganizerDashboard from './components/OrganizerDashboard';
 import PrivateRoute from './components/PrivateRoute';
+import Cart from './components/Cart';
+import Checkout from './components/Checkout';
 
 const App = () => {
   return (
@@ -22,6 +24,8 @@ const App = () => {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/trips/:id" element={<TripDetails />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/checkout" element={<PrivateRoute><Checkout /></PrivateRoute>} />
               <Route
                 path="/dashboard"
                 element={
