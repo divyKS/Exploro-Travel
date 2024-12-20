@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 
 const Cart = () => {
   const [cart, setCart] = useState(null);
@@ -9,6 +10,7 @@ const Cart = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { updateCartCount } = useCart();
 
   useEffect(() => {
     fetchCart();
@@ -18,6 +20,7 @@ const Cart = () => {
     try {
       const response = await axios.get('http://localhost:3500/api/cart');
       setCart(response.data);
+      updateCartCount(response.data.items.length);
     } catch (error) {
       setError('Error fetching cart');
     } finally {
@@ -55,7 +58,7 @@ const Cart = () => {
             <div>
               <h3 className="text-lg font-semibold">{item.trip.name}</h3>
               <p className="text-gray-600">{item.trip.location}</p>
-              <p className="text-gray-700">Price: ${item.trip.price}</p>
+              <p className="text-gray-700">Price: ₹{item.trip.price}</p>
             </div>
             <button
               onClick={() => handleRemoveItem(item.trip._id)}
@@ -69,7 +72,7 @@ const Cart = () => {
         <div className="mt-6 pt-6 border-t">
           <div className="flex justify-between text-xl font-bold">
             <span>Total:</span>
-            <span>${calculateTotal()}</span>
+            <span>₹{calculateTotal()}</span>
           </div>
           <button
             onClick={() => navigate('/checkout')}

@@ -256,7 +256,7 @@ const OrganizerDashboard = () => {
                 <p className="text-gray-700 mt-2">
                   Available Slots: {trip.availableSlots}/{trip.totalSlots}
                 </p>
-                <p className="text-gray-700">Price: ${trip.price}</p>
+                <p className="text-gray-700">Price: ₹{trip.price}</p>
               </div>
 
               <div className="flex gap-2">

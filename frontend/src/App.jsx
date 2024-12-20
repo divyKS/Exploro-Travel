@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router';
 import { AuthProvider } from './context/AuthContext';
+import { CartProvider } from './context/CartContext';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
 import Login from './components/Login';
@@ -15,6 +16,7 @@ import Checkout from './components/Checkout';
 const App = () => {
   return (
     <AuthProvider>
+      <CartProvider>
       <Router>
         <div className="min-h-screen bg-gray-100">
           <Navbar />
@@ -46,6 +48,7 @@ const App = () => {
           </div>
         </div>
       </Router>
+      </CartProvider>
     </AuthProvider>
   );
 };

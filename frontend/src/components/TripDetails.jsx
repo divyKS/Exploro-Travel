@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router';
+import { useParams, useNavigate, Link } from 'react-router';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 
@@ -44,22 +44,27 @@ const TripDetails = () => {
     }
   };
 
-  // const handleBooking = async () => {
-  //   if (!user) {
-  //     navigate('/login');
-  //     return;
-  //   }
-
-  //   try {
-  //     await axios.post('http://localhost:3500/api/bookings', { tripId: id });
-  //     navigate('/dashboard');
-  //   } catch (error) {
-  //     setError(error.response?.data?.error || 'Error booking trip');
-  //   }
-  // };
-
   if (loading) return <div>Loading...</div>;
-  if (error) return <div className="text-red-600">{error}</div>;
+  if (error){
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="text-center">
+        <h1 className="text-2xl font-bold text-gray-900 mb-4">
+          Oops! Something went wrong
+        </h1>
+        <p className="text-red-600 mb-8">
+          {error || 'An unexpected error occurred'}
+        </p>
+        <Link
+          to="/"
+          className="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg transition-colors"
+        >
+          Return to Home
+        </Link>
+      </div>
+    </div>
+    )
+  }
   if (!trip) return <div>Trip not found</div>;
 
   return (
@@ -88,7 +93,7 @@ const TripDetails = () => {
             </div>
             
             <div className="bg-gray-50 p-6 rounded-lg">
-              <div className="text-2xl font-bold mb-4">${trip.price}</div>
+              <div className="text-2xl font-bold mb-4">₹{trip.price}</div>
               <button
                 onClick={handleAddToCart}
                 disabled={trip.availableSlots === 0 || addingToCart || user?.role === 'organizer'}
@@ -105,17 +110,6 @@ const TripDetails = () => {
                     : 'Add to Cart'
                 }
               </button>
-              {/* <button
-                onClick={handleBooking}
-                disabled={trip.availableSlots === 0}
-                className={`w-full py-3 px-4 rounded-lg text-white text-center ${
-                  trip.availableSlots > 0
-                    ? 'bg-blue-500 hover:bg-blue-600'
-                    : 'bg-gray-400 cursor-not-allowed'
-                }`}
-              >
-                {trip.availableSlots > 0 ? 'Book Now' : 'Sold Out'}
-              </button> */}
               
               <div className="mt-4 text-sm text-gray-600">
                 <h3 className="font-semibold mb-2">Cancellation Policy</h3>

@@ -14,7 +14,7 @@ const TripCard = ({ trip }) => {
         <p className="text-gray-600 mb-2">{trip.location}</p>
         <p className="text-gray-800 mb-4">{trip.description.substring(0, 100)}...</p>
         <div className="flex justify-between items-center">
-          <span className="text-lg font-bold">${trip.price}</span>
+          <span className="text-lg font-bold">₹{trip.price}</span>
           <Link
             to={`/trips/${trip._id}`}
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"

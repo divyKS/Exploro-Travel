@@ -78,7 +78,7 @@ const UserDashboard = () => {
                     Status: <span className="font-semibold">{booking.status}</span>
                   </p>
                   <p className="text-gray-700">
-                    Payment: <span className="font-semibold">${booking.paymentAmount}</span>
+                    Payment: <span className="font-semibold">₹{booking.paymentAmount}</span>
                   </p>
                 </div>
                 

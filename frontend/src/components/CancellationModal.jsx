@@ -46,12 +46,12 @@ const CancellationModal = ({ isOpen, onClose, booking, onConfirmCancel, cancelLo
                 <h4 className="font-semibold mb-2">Refund Details</h4>
                 <div className="space-y-1 text-sm">
                 <p>Trip Start: {new Date(booking?.trip?.startDate).toLocaleDateString()}</p>
-                <p>Booking Amount: ${booking?.paymentAmount}</p>
+                <p>Booking Amount: ₹{booking?.paymentAmount}</p>
                 <div className="border-t border-gray-200 mt-2 pt-2">
                     {refundPercentage > 0 ? (
                     <div className="text-green-600">
                         <p>Eligible for {refundPercentage}% refund</p>
-                        <p className="font-semibold">Refund Amount: ${refundAmount}</p>
+                        <p className="font-semibold">Refund Amount: ₹{refundAmount}</p>
                     </div>
                     ) : (
                     <p className="text-red-600">
