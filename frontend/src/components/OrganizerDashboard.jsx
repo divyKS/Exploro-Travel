@@ -17,6 +17,7 @@ const OrganizerDashboard = () => {
     price: '',
     totalSlots: ''
   });
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const { user } = useAuth()
 
@@ -40,6 +41,10 @@ const OrganizerDashboard = () => {
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleImageChange = (e) => {
+    setSelectedImage(e.target.files[0]);
   };
 
   const resetForm = () => {
@@ -79,32 +84,30 @@ const OrganizerDashboard = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const data = new FormData();
+      
+      data.append('tripImage', selectedImage);
+      
+      for (let key in formData) {
+        data.append(key, formData[key]);
+      }
+      
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      };
+
       if (editingTrip) {
-        await axios.patch(`http://localhost:3500/api/trips/${editingTrip}`, formData);
+        await axios.patch(`http://localhost:3500/api/trips/${editingTrip}`, data, config);
       } else {
-        await axios.post('http://localhost:3500/api/trips', formData);
+        await axios.post('http://localhost:3500/api/trips', data, config);
       }
       resetForm();
       fetchTrips();
     } catch (error) {
       setError(editingTrip ? 'Error updating trip' : 'Error creating trip');
     }
-    // try {
-    //   await axios.post('http://localhost:3500/api/trips', formData);
-    //   setShowForm(false);
-    //   setFormData({
-    //     name: '',
-    //     description: '',
-    //     location: '',
-    //     startDate: '',
-    //     endDate: '',
-    //     price: '',
-    //     totalSlots: ''
-    //   });
-    //   fetchTrips();
-    // } catch (error) {
-    //   setError('Error creating trip');
-    // }
   };
 
   const handleDeleteTrip = async (tripId) => {
@@ -204,6 +207,22 @@ const OrganizerDashboard = () => {
               />
             </div>
           </div>
+          <div>
+            <label
+              className="block mb-1"
+              htmlFor="tripImage"
+            >
+              Trip Image
+            </label>
+            <input
+              type="file"
+              id="tripImage"
+              accept="image/*"
+              className="w-full p-2 border rounded"
+              onChange={handleImageChange}
+              required
+            />
+        </div>
           <div className="mt-4">
             <label className="block mb-1">Description</label>
             <textarea
